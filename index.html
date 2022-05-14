@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>Messy Speaker</title>
+  <title>TwistEGG</title>
   <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
   <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
   <!--<script src="https://cdn.jsdelivr.net/npm/web3@0.20.1/dist/web3.js"></script>-->
@@ -13,46 +13,107 @@
 	{
 		"inputs": [
 			{
-				"internalType": "string",
-				"name": "_sth",
-				"type": "string"
+				"internalType": "bool",
+				"name": "_state",
+				"type": "bool"
 			}
 		],
+		"name": "pause",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes32",
+				"name": "_hashB",
+				"type": "bytes32"
+			}
+		],
+		"name": "Prepare",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_a",
+				"type": "uint256"
+			}
+		],
+		"name": "Request",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_admin",
+				"type": "address"
+			}
+		],
+		"name": "setAdmin",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_b",
+				"type": "uint256"
+			}
+		],
+		"name": "verify",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
 		"stateMutability": "nonpayable",
 		"type": "constructor"
 	},
 	{
-		"anonymous": false,
 		"inputs": [
 			{
-				"indexed": false,
-				"internalType": "address",
-				"name": "buyer",
-				"type": "address"
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "Orders",
+		"outputs": [
+			{
+				"internalType": "bytes32",
+				"name": "hashB",
+				"type": "bytes32"
 			},
 			{
-				"indexed": false,
 				"internalType": "uint256",
-				"name": "price",
+				"name": "A",
 				"type": "uint256"
 			},
 			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "say_sth",
-				"type": "string"
-			}
-		],
-		"name": "aPayment",
-		"type": "event"
-	},
-	{
-		"inputs": [],
-		"name": "HighestPrice",
-		"outputs": [
+				"internalType": "uint256",
+				"name": "B",
+				"type": "uint256"
+			},
 			{
 				"internalType": "uint256",
-				"name": "",
+				"name": "R",
 				"type": "uint256"
 			}
 		],
@@ -61,38 +122,12 @@
 	},
 	{
 		"inputs": [],
-		"name": "gap",
+		"name": "paused",
 		"outputs": [
 			{
-				"internalType": "uint256",
+				"internalType": "bool",
 				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "now_gap",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "now_price",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
+				"type": "bool"
 			}
 		],
 		"stateMutability": "view",
@@ -101,66 +136,20 @@
 	{
 		"inputs": [
 			{
-				"internalType": "string",
-				"name": "_say_sth",
-				"type": "string"
-			}
-		],
-		"name": "pay_me_and_say_sth",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
 				"internalType": "uint256",
-				"name": "_gap",
+				"name": "_A",
 				"type": "uint256"
 			}
 		],
-		"name": "setGap",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_price",
-				"type": "uint256"
-			}
-		],
-		"name": "setPrice",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "something",
+		"name": "RANDOM",
 		"outputs": [
 			{
-				"internalType": "string",
+				"internalType": "bytes32",
 				"name": "",
-				"type": "string"
+				"type": "bytes32"
 			}
 		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "what_do_you_say",
-		"outputs": [
-			{
-				"internalType": "string",
-				"name": "",
-				"type": "string"
-			}
-		],
-		"stateMutability": "view",
+		"stateMutability": "pure",
 		"type": "function"
 	}
 ]
@@ -274,18 +263,18 @@
 </script>
 </head>
 <body class="container">
-   <font color="#39c5bb" size=7 face="Comic Sans MS"><b><h1>Messy Speaker !! BETA</h1><b></font>
+   <font color="#39c5bb" size=7 face="Comic Sans MS"><b><h1>Let's TwistEGG !! BETA</h1><b></font>
   <div class="table-responsive"> 
     <table class="table table-bordered">
       <thead>
         <tr>
-          <th id="price">Messy</th>
+          <th id="price">TwistEGG</th>
           <th>Last Highest Payment</th>
         </tr>
       </thead>
       <thead>
         <tr>
-          <th id="gap">Messy</th>
+          <th id="gap">TwistEGG</th>
           <th>Gap Now</th>
         </tr>
       </thead>
