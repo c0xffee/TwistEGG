@@ -170,6 +170,7 @@
     
     async function Request(_a) { 
     
+    	_a = parseInt(_a)
         let res = await contract.methods.Request(_a)
         // console.log(res.events.aPayment.returnValues.buyer);
         // console.log(res.events.aPayment.returnValues.price);
@@ -235,7 +236,7 @@
     //connect2metamask()
     let sth;
     let nowprice;
-    get_data();
+    //get_data();
     
     console.log(sth+nowprice)
     
