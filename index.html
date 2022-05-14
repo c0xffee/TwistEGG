@@ -168,19 +168,18 @@
 
     });
     
-    async function pay_me_and_say_sth(usay, urprice, address) { 
+    async function Request(_a) { 
     
-        let res = await contract.methods.pay_me_and_say_sth(usay).send({from:address, value:urprice})
-        console.log(res.events.aPayment.returnValues.buyer);
-        console.log(res.events.aPayment.returnValues.price);
-        
-        
+        let res = await contract.methods.Request(_a)
+        // console.log(res.events.aPayment.returnValues.buyer);
+        // console.log(res.events.aPayment.returnValues.price);
+        console.log(res);
     };
     
     
     window.web3 = new Web3(window.web3.currentProvider);
     
-    async function connect2metamask(usay, urprice) {
+    async function connect2metamask(_a) {
         
         urprice = Web3.utils.toWei(urprice)
         let address;
@@ -188,7 +187,7 @@
         address = address[0]
     
         console.log(address)
-        pay_me_and_say_sth(usay, urprice, address);
+        Request(_a);
         
         
     }
@@ -289,8 +288,8 @@
   
   <!--<h5>Say SOMETHING</h5><input type="text" size="150" id="usay" />-->
   <h5>Say SOMETHING :</h5><textarea id="usay" style="width: 340px; height: 50px" rows="10" cols="80">what do you want 2 say!?</textarea>
-  <h5>Price (BCH) :</h5><input type="number" min="0.00" step="0.0005" size="50" id="urprice" />
-  <a href="#" onclick="connect2metamask(document.getElementById('usay').value, document.getElementById('urprice').value)" class="btn btn-primary">Speak Out Loud</a>
+  <h5>Set A :</h5><input type="number" min="0" step="1" size="50" id="_a" />
+  <a href="#" onclick="connect2metamask(document.getElementById('_a').value)" class="btn btn-primary">Speak Out Loud</a>
   <h5>TIPS : Input something you want to say and pay me some BCH <br><br>
   I will use my Noise account Messy create a post with something you want to saying<BR><br>
   ThePriceYouPay >= LastHighestPrice + Gap<BR><BR>
