@@ -164,10 +164,10 @@
     });
     
 
-    async function Request(_a) { 
+    async function Request(_a, address) { 
     
     	_a = parseInt(_a)
-        let res = await contract.methods.Request(_a)
+        let res = await contract.methods.Request(_a).send({from:address, value:0})
         // console.log(res.events.aPayment.returnValues.price);
         console.log(res);
     };
@@ -178,12 +178,12 @@
     
     async function connect2metamask(_a) {
         
-        // let address;
-        // address = await ethereum.request({ method: 'eth_requestAccounts' })
-        // address = address[0]
+        let address;
+        address = await ethereum.request({ method: 'eth_requestAccounts' })
+        address = address[0]
     
-        // console.log(address)
-        Request(_a);
+        console.log(address)
+        Request(_a, address);
         
         
     }
