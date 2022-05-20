@@ -84,6 +84,19 @@
 		"inputs": [
 			{
 				"indexed": false,
+				"internalType": "uint256",
+				"name": "a",
+				"type": "uint256"
+			}
+		],
+		"name": "atest",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
 				"internalType": "bool",
 				"name": "paused",
 				"type": "bool"
@@ -146,6 +159,19 @@
 			}
 		],
 		"name": "setPause",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_a",
+				"type": "uint256"
+			}
+		],
+		"name": "test",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -283,37 +309,137 @@
         }
 
     });
-    
+
+
+    function listening(_aa) {
+    	console.log("listening num:", _aa);
+    	var option = {"a":web3.utils.numberToHex(_aa)};
+    	contract.events.atest({filter:option})
+    		.on('data', function(event) {
+    			console.log('data');
+    			console.log('a:', event.returnValues.a);
+    			aa = event.returnValues.a;
+    		})
+    		.on('changed', changed => console.log('changed:', changed))
+    		.on('error', err => console.log('error:', err))
+    		.on('connected', str => console.log('connected:', str))
+    }
+
+
+    function WaitingOrderReciept(orderid) {
+    	console.log("Waiting Order ID:", orderid);
+    	var option = {"Order_ID":web3.utils.numberToHex(orderid)};
+    	contract.events.Order({filter:option})
+    		.on('data',  function(event) {
+        		let _Order_ID          = event.returnValues.Order_ID;
+        		let _Random_number     = event.returnValues.True_Random_Number;
+        		let _Your_Number       = event.returnValues.EGG_Twister_Chosen_Number;
+        		let _Providers_Number  = event.returnValues.EGG_Provider_Chosen_Number;
+        		let _Providers_NumHash = event.returnValues.EGG_Provider_Chosen_Number_Hash;
+        		console.log("Order ID:",			   _Order_ID);
+        		console.log("Your Random number:",	   _Random_number);
+        		console.log("Your Number:",			   _Your_Number);
+        		console.log("Provider's Number:",      _Providers_Number);
+        		console.log("Provider's Number Hash:", _Providers_NumHash);   
+
+        		document.getElementById("order-id").innerHTML  = _Order_ID;
+        		document.getElementById("hashB").innerHTML     = _Providers_NumHash;
+        		document.getElementById("A").innerHTML 	   	   = _Your_Number;
+        		document.getElementById("B").innerHTML    	   = _Providers_Number;
+        		document.getElementById("R").innerHTML    	   = _Random_number;
+
+    			Order_ID 		  = _Order_ID;
+    			Providers_NumHash = _Providers_NumHash;
+    			Your_Number 	  = _Your_Number;
+    			Providers_Number  = _Providers_Number;
+    			Random_number 	  = _Random_number;    
+
+    		})
+    		.on('changed', changed => console.log('changed:', changed))
+    		.on('error', err => console.log('error:', err))
+    		.on('connected', str => console.log('connected:', str))
+    	//var C = new web3.eth.Contract(myABI, ct_addr);
+    	/*
+    	var options = {
+        	"fromBlock": "0",
+        	"toBlock": "latest"
+        };
+    	var index = {
+        	"Order_ID": web3.utils.numberToHex(orderid)
+    	};
+    	var myEvent = C.Order(index, options);
+
+    	myEvent.watch(function(error, result){
+        	if(error){
+            	console.log("Get event error:", error);
+        	} else {
+            console.log(result);
+        	}
+    	});*/
+
+	}
+
 
     async function Request(_a, address) { 
     
     	_a = parseInt(_a)
-        let res = await contract.methods.Request(_a).call();
+    	let res = await contract.methods.Request(_a).send({from:address, value:0})
+        //let res = await contract.methods.Request(_a).call();
         // console.log(res.events.aPayment.returnValues.price);
         console.log(res);
-        console.log(res.events.Receipt);
-        // console.log(res.events.aPayment.returnValues.price);
+
+        let __Order_ID          = res.events.Receipt.returnValues.Order_ID;
+        let __Your_Wallet       = res.events.Receipt.returnValues.EGG_Twister;
+        let __Your_Number       = res.events.Receipt.returnValues.EGG_Twister_Chosen_Number;
+        let __Providers_NumHash = res.events.Receipt.returnValues.EGG_Provider_Chosen_Number_Hash;
+
+    	console.log('Order ID:', 				 __Order_ID);
+    	console.log('Your Wallet Address:',		 __Your_Wallet);
+    	console.log('Your Number:',				 __Your_Number);
+    	console.log('Provider\'s Number Hash::', __Providers_NumHash);
+	    console.log("Waiting Order Recipt .......");
+
+        document.getElementById("order-id").innerHTML  = __Order_ID;
+        document.getElementById("wallet").innerHTML    = __Your_Wallet;
+        document.getElementById("hashB").innerHTML 	   = __Providers_NumHash;
+        document.getElementById("A").innerHTML    	   = __Your_Number;
+
+    	Order_ID 		  = __Order_ID;
+    	Providers_NumHash = __Providers_NumHash;
+    	Your_Number 	  = __Your_Number;
+    	Your_Wallet       = __Your_Number;
+
+        WaitingOrderReciept(Order_ID)
     };
-    
-    
+
+
     window.web3 = new Web3(window.web3.currentProvider);
     //window.web3 = new Web3(window.ethereum);
-    
+
     async function connect2metamask(_a) {
         
+    	// Declare Varables
+    	let Order_ID;
+    	let Your_Wallet;
+    	let Providers_NumHash;
+    	let Your_Number;
+    	let Providers_Number;
+    	let Random_number;  
+
+
         let address;
         address = await ethereum.request({ method: 'eth_requestAccounts' })
-        address = address[0]
+        address = address[0];
     
-        console.log(address)
-        Order_ID = Request(_a, address);
-         
-    }
+        console.log(address);
+        Request(_a, address);
+
+    }    
         
     
     async function chk_paused() { 
         let paused = await contract.methods.paused().call();        
-        console.log(paused)
+        console.log("Paused:", paused)
         if(paused) {
     		alert( 'EGG Twisting is not available now : PAUSED_BY_ADMIN' );
     	}
@@ -321,24 +447,36 @@
 
 
     async function chk_available() { 
-        let head_idx = await contract.methods.head().call();        
-        let mid_idx  = await contract.methods.mid().call();        
-        console.log(head_idx, mid_idx)
+        let head_idx  = await contract.methods.head().call();        
+        let mid_idx   = await contract.methods.mid().call(); 
+        let tail_idx  = await contract.methods.tail().call(); 
+        head_idx = parseInt(head_idx);  
+        mid_idx  = parseInt(mid_idx);   
+        tail_idx = parseInt(tail_idx);  
+        console.log(head_idx, mid_idx, tail_idx)
+        console.log("available EGGs:", head_idx - mid_idx)
         if(head_idx <= mid_idx) {
     		alert( 'EGG Twisting is not available now : NO_MORE_EGGS_AVAILABLE_NOW' );
     	}
     };
 
 
-    var ct_addr = "0xcA1a7C2EA46b387282230b4D91f7F09C4E221d36";
+    // var ct_addr = "0xcA1a7C2EA46b387282230b4D91f7F09C4E221d36"; //v1.5
+    var ct_addr = "0xfb5A6e6e08a7f2875F70d5954a3F4d7d0F4d9D86";
     let contract = new web3.eth.Contract(myABI, ct_addr);
-    let Order_ID;
+
+    console.log();
     chk_paused()
     chk_available()
 
     console.log("v1.5");
 
-
+    let Order_ID;
+    let Your_Wallet;
+    let Providers_NumHash;
+    let Your_Number;
+    let Providers_Number;
+    let Random_number;
     
 
 </script>
@@ -351,6 +489,46 @@
   <h5>Set A :</h5><input type="number" min="0" step="1" size="50" id="_a" />
   <a href="#" onclick="connect2metamask(document.getElementById('_a').value)" class="btn btn-primary">Request A!!!!</a>
 
+  <div class="table-responsive"> 
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Order ID</th>        	
+          <th id="order-id">Pending</th>
+        </tr>
+      </thead>
+      <thead>
+        <tr>
+          <th>Your Wallet Address</th>        	
+          <th id="wallet">Pending</th>
+        </tr>
+      </thead>
+      <thead>
+        <tr>
+          <th>Provider's Number Hash</th>        	
+          <th id="hashB">Pending</th>
+        </tr>
+      </thead>
+      <thead>
+        <tr>
+          <th>Your Number</th>        	
+          <th id="A">Pending</th>
+        </tr>
+      </thead>
+      <thead>
+        <tr>
+          <th>Provider's Number</th>
+          <th id="B">Pending</th>
+        </tr>
+      </thead>
+      <thead>
+        <tr>
+          <th>Your Random EGG Number</th>        	
+          <th id="R">Pending</th>
+        </tr>
+      </thead>
+    </table>
+  </div>
 </body>
 
 </html>
