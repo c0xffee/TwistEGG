@@ -288,7 +288,7 @@
     async function Request(_a, address) { 
     
     	_a = parseInt(_a)
-        let res = await contract.methods.Request(_a).send({from:address, value:0})
+        let res = await contract.methods.Request(_a).call();
         // console.log(res.events.aPayment.returnValues.price);
         console.log(res);
     };
@@ -304,7 +304,7 @@
         address = address[0]
     
         console.log(address)
-        Request(_a, address);
+        Order_ID = Request(_a, address);
          
     }
         
@@ -330,6 +330,7 @@
 
     var ct_addr = "0xcA1a7C2EA46b387282230b4D91f7F09C4E221d36";
     let contract = new web3.eth.Contract(myABI, ct_addr);
+    let Order_ID;
     chk_paused()
     chk_available()
 
