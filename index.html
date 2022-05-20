@@ -76,6 +76,7 @@
     var ct_addr; let myABI;
     load_ct ("./Contracts/hashB+A+B-DynamicArray-address-Rinkeby.txt");
     load_abi("./Contracts/hashB+A+B-DynamicArray-abi.txt")
+    myABI = JSON.parse(myABI);
     let contract = new web3.eth.Contract(myABI, ct_addr);
     chk_paused()
 
