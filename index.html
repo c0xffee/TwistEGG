@@ -9,151 +9,7 @@
 <script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script >
-    let myABI = [
-	{
-		"inputs": [
-			{
-				"internalType": "bool",
-				"name": "_state",
-				"type": "bool"
-			}
-		],
-		"name": "pause",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "bytes32",
-				"name": "_hashB",
-				"type": "bytes32"
-			}
-		],
-		"name": "Prepare",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_a",
-				"type": "uint256"
-			}
-		],
-		"name": "Request",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_admin",
-				"type": "address"
-			}
-		],
-		"name": "setAdmin",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_b",
-				"type": "uint256"
-			}
-		],
-		"name": "verify",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "Orders",
-		"outputs": [
-			{
-				"internalType": "bytes32",
-				"name": "hashB",
-				"type": "bytes32"
-			},
-			{
-				"internalType": "uint256",
-				"name": "A",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "B",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "R",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "paused",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_A",
-				"type": "uint256"
-			}
-		],
-		"name": "RANDOM",
-		"outputs": [
-			{
-				"internalType": "bytes32",
-				"name": "",
-				"type": "bytes32"
-			}
-		],
-		"stateMutability": "pure",
-		"type": "function"
-	}
-]
-
+    
     $(function(){
         if (window.web3) {
             // 有安裝 MetaMask
@@ -185,6 +41,7 @@
         console.log(address)
         Request(_a, address);
         
+        
     }
         
     
@@ -195,9 +52,30 @@
     		alert( 'EGG Twisting is no available now : PAUSED_BY_ADMIN' );
     	}
     };
+
+
+    function load_ct(path) {$(document).ready(function() {
+    	$.ajax({
+        	url : path,
+        	dataType: "text",
+        	success : function (data) {
+            	console.log(data);
+                ct_addr = data;}});})
+	};
     
 
-    var ct_addr = "0x522028dD66b57444Eb134578171066e4Eb12bBe7";
+    function load_abi(path) {$(document).ready(function() {
+    	$.ajax({
+        	url : path,
+        	dataType: "text",
+        	success : function (data) {
+            	console.log(data);
+                myABI = data;}});})
+	};    
+
+    var ct_addr; let myABI;
+    load_ct ("./Contracts/hashB+A+B-DynamicArray-address-Rinkeby.txt");
+    load_abi("./Contracts/hashB+A+B-DynamicArray-abi.txt")
     let contract = new web3.eth.Contract(myABI, ct_addr);
     chk_paused()
 
