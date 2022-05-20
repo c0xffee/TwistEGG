@@ -188,41 +188,21 @@
         
     }
         
-    /*
-    async function get_data() { 
-        let sth   = await contract.methods.what_do_you_say().call();
-        var price = await contract.methods.now_price().call();
-        var gap   = await contract.methods.now_gap().call();
+    
+    async function chk_paused() { 
+        let paused = await contract.methods.paused().call();        
+        console.log(paused)
         
-        price = parseInt(price)
-        gap   = parseInt(gap)
-        
-        var total = price + gap;
-        console.log(total)
-        
-        price = price.toString();
-        gap   = gap.toString();
-        total = total.toString();
-        
-        document.getElementById("price").innerHTML  = Web3.utils.fromWei(price) + " BCH";
-        document.getElementById("gap").innerHTML    = Web3.utils.fromWei(gap)   + " BCH";
-        document.getElementById("BIGGER").innerHTML = Web3.utils.fromWei(total) + " BCH";
-        document.getElementById("sth").innerHTML    = sth;
-        
-        document.getElementById("urprice").min   = Web3.utils.fromWei(total);
-        document.getElementById("urprice").value = Web3.utils.fromWei(total);
-        
-        
-        console.log(sth);
-        console.log(price);
-        //return sth, price;
-        
-        
+        return paused;
     };
-    */
+    
 
     var ct_addr = "0x522028dD66b57444Eb134578171066e4Eb12bBe7";
     let contract = new web3.eth.Contract(myABI, ct_addr);
+    if(chk_paused()) {
+    	alert( 'EGG Twisting is no available now : PAUSED_BY_ADMIN' );
+    }
+
     
 
 </script>
