@@ -291,6 +291,8 @@
         let res = await contract.methods.Request(_a).call();
         // console.log(res.events.aPayment.returnValues.price);
         console.log(res);
+        console.log(res.events.Receipt);
+        // console.log(res.events.aPayment.returnValues.price);
     };
     
     
@@ -333,6 +335,8 @@
     let Order_ID;
     chk_paused()
     chk_available()
+
+    console.log("v1.5");
 
 
     
