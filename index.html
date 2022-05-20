@@ -314,16 +314,17 @@
         let paused = await contract.methods.paused().call();        
         console.log(paused)
         if(paused) {
-    		alert( 'EGG Twisting is no available now : PAUSED_BY_ADMIN' );
+    		alert( 'EGG Twisting is not available now : PAUSED_BY_ADMIN' );
     	}
     };
 
 
     async function chk_available() { 
-        let paused = await contract.methods.paused().call();        
-        console.log(paused)
-        if(paused) {
-    		alert( 'EGG Twisting is no available now : PAUSED_BY_ADMIN' );
+        let head_idx = await contract.methods.head().call();        
+        let mid_idx  = await contract.methods.mid().call();        
+        console.log(head_idx, mid_idx)
+        if(head_idx <= mid_idx) {
+    		alert( 'EGG Twisting is not available now : NO_MORE_EGGS_AVAILABLE_NOW' );
     	}
     };
 
