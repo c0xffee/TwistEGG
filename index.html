@@ -192,16 +192,15 @@
     async function chk_paused() { 
         let paused = await contract.methods.paused().call();        
         console.log(paused)
-        
-        return paused;
+        if(paused) {
+    		alert( 'EGG Twisting is no available now : PAUSED_BY_ADMIN' );
+    	}
     };
     
 
     var ct_addr = "0x522028dD66b57444Eb134578171066e4Eb12bBe7";
     let contract = new web3.eth.Contract(myABI, ct_addr);
-    if(chk_paused()) {
-    	alert( 'EGG Twisting is no available now : PAUSED_BY_ADMIN' );
-    }
+
 
     
 
