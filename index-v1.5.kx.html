@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>TwistEGG</title>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+  <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
+  <!--<script src="https://cdn.jsdelivr.net/npm/web3@0.20.1/dist/web3.js"></script>-->
+<script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script >
+
+	let myABI = [
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "Order_ID",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "bytes32",
+				"name": "EGG_Provider_Chosen_Number_Hash",
+				"type": "bytes32"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "EGG_Twister_Chosen_Number",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "EGG_Provider_Chosen_Number",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "True_Random_Number",
+				"type": "uint256"
+			}
+		],
+		"name": "Order",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "Order_ID",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "EGG_Twister",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "bytes32",
+				"name": "EGG_Provider_Chosen_Number_Hash",
+				"type": "bytes32"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "EGG_Twister_Chosen_Number",
+				"type": "uint256"
+			}
+		],
+		"name": "Receipt",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "bool",
+				"name": "paused",
+				"type": "bool"
+			}
+		],
+		"name": "isPaused",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes32",
+				"name": "_hashB",
+				"type": "bytes32"
+			}
+		],
+		"name": "Prepare",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_a",
+				"type": "uint256"
+			}
+		],
+		"name": "Request",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_admin",
+				"type": "address"
+			}
+		],
+		"name": "setAdmin",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bool",
+				"name": "_state",
+				"type": "bool"
+			}
+		],
+		"name": "setPause",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_b",
+				"type": "uint256"
+			}
+		],
+		"name": "Verify",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [],
+		"name": "head",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "mid",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "Orders",
+		"outputs": [
+			{
+				"internalType": "bytes32",
+				"name": "hashB",
+				"type": "bytes32"
+			},
+			{
+				"internalType": "uint256",
+				"name": "A",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "B",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "R",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "paused",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_A",
+				"type": "uint256"
+			}
+		],
+		"name": "RANDOM",
+		"outputs": [
+			{
+				"internalType": "bytes32",
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"stateMutability": "pure",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "tail",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+]
+    
+    $(function(){
+        if (window.web3) {
+            // 有安裝 MetaMask
+        } else {
+            alert( 'You havn\'t install MetaMask' );
+        }
+
+    });
+    
+
+    async function Request(_a, address) { 
+    
+    	_a = parseInt(_a)
+        let res = await contract.methods.Request(_a).send({from:address, value:0})
+        // console.log(res.events.aPayment.returnValues.price);
+        console.log(res);
+    };
+    
+    
+    window.web3 = new Web3(window.web3.currentProvider);
+    //window.web3 = new Web3(window.ethereum);
+    
+    async function connect2metamask() {
+        
+        let address;
+        address = await ethereum.request({ method: 'eth_requestAccounts' })
+        address = address[0]
+    
+        console.log(address)
+        console.log(web3.utils.toChecksumAddress(address))
+        return web3.utils.toChecksumAddress(address);
+        // Request(_a, address);
+         
+    }
+        
+    
+    async function chk_paused() { 
+        let paused = await contract.methods.paused().call();        
+        console.log(paused)
+        if(paused) {
+    		alert( 'EGG Twisting is not available now : PAUSED_BY_ADMIN' );
+    	}
+    };
+
+
+    async function chk_available() { 
+        let head_idx = await contract.methods.head().call();        
+        let mid_idx  = await contract.methods.mid().call();        
+        console.log(head_idx, mid_idx)
+        if(head_idx <= mid_idx) {
+    		alert( 'EGG Twisting is not available now : NO_MORE_EGGS_AVAILABLE_NOW' );
+    	}
+    };
+
+
+    var ct_addr = "0xcA1a7C2EA46b387282230b4D91f7F09C4E221d36";
+    let contract = new web3.eth.Contract(myABI, ct_addr);
+    chk_paused()
+    chk_available()
+    let address = connect2metamask()
+
+
+
+    
+
+</script>
+</head>
+<body class="container">
+   <font color="#39c5bb" size=7 face="Comic Sans MS"><b><h1>Let's TwistEGG !! BETA</h1><b></font>
+
+  
+
+  <h5>Set A :</h5><input type="number" min="0" step="1" size="50" id="_a" />
+  <a href="#" onclick="Request(document.getElementById('_a').value, address)" class="btn btn-primary">Request A!!!!</a>
+
+</body>
+
+</html>
