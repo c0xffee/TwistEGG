@@ -7,7 +7,15 @@
   <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
   <!--<script src="https://cdn.jsdelivr.net/npm/web3@0.20.1/dist/web3.js"></script>-->
 <script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/3.2.0/sha256.min.js" integrity="sha512-j1REQToOszIQ5VTqzcgk5uHGXN3ce9NVsWSA3PA2Ze2NhwMiavzScb669EbY6XBHrhGFvLUpP6OhT9/LV7g8cw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bignumber.js/8.0.2/bignumber.min.js" integrity="sha512-7UzDjRNKHpQnkh1Wf1l6i/OPINS9P2DDzTwQNX79JxfbInCXGpgI1RPb3ZD+uTP3O5X7Ke4e0+cxt2TxV7n0qQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<style type="text/css">
+	html, body {
+    	height: 100vh;
+	}	
+</style>
+</css>
 <script >
 
 	let myABI = [
@@ -382,7 +390,8 @@
 
     async function Request(_a, address) { 
     
-    	_a = parseInt(_a)
+    	// _a = parseInt(_a)
+    	console.log(_a);
     	let res = await contract.methods.Request(_a).send({from:address, value:0})
         //let res = await contract.methods.Request(_a).call();
         // console.log(res.events.aPayment.returnValues.price);
@@ -417,7 +426,9 @@
     //window.web3 = new Web3(window.ethereum);
 
     async function connect2metamask(_a) {
-        
+
+    	// _a = new BigNumber("0x" + _a)
+        _a = "0x" + _a
     	// Declare Varables
     	let Order_ID;
     	let Your_Wallet;
@@ -481,15 +492,17 @@
 
 </script>
 </head>
-<body class="container">
+<body class="container" style="height:95%">
+  <div style="height:97vh;">
+  	<div height="20px"></div>
    <font color="#39c5bb" size=7 face="Comic Sans MS"><b><h1>Let's TwistEGG !! BETA</h1><b></font>
 
   
 
-  <h5>Set A :</h5><input type="number" min="0" step="1" size="50" id="_a" />
+  <h5>Set A :</h5><input oninput="this.value=123" type="text" size="80" id="_a" />
   <a href="#" onclick="connect2metamask(document.getElementById('_a').value)" class="btn btn-primary">Request A!!!!</a>
 
-  <div class="table-responsive"> 
+  <div>
     <table class="table table-bordered">
       <thead>
         <tr>
@@ -529,6 +542,94 @@
       </thead>
     </table>
   </div>
+
+	<div id="fuck" style="text-align:center;">
+
+		<canvas class="Mycanvas" ></canvas>
+	</div>  
+
+
+	<script>
+		var hh = $(window).height();
+
+		//document.getElementById('fuck').setAttribute("style","height:"+(hh-300).toString()+"px");
+
+		$(document).ready(function() {
+    $(window).resize(function() {
+        var h = $(window).height();
+        var w = $(window).width();
+
+        if((h/w)>0.61) {
+            $('#container').css({'height': h, 'width':h*1.64});
+        }
+        else { 
+            $('#container').css({'height': w/1.64, 'width':w});
+        }
+    });
+
+});
+
+		// draw //
+		const canvas = document.querySelector("canvas");
+		const ctx = canvas.getContext("2d");
+
+		canvas.width    = document.getElementById("fuck").offsetWidth ; // 設定畫布的寬度
+		canvas.height   = document.body.offsetHeight - 350; // 設定畫布的高度
+		ctx.fillStyle   = "gray"; // 設定勾勒圖形時用的顏色
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+		ctx.strokeStyle = "#BADA55"; // 設定勾勒圖形時用的顏色
+		ctx.lineJoin    = "round"; // 指定兩條線連結處的屬性，這裡選擇用圓角
+		ctx.lineCap     = "round"; // 指定每一條線末端的屬性，這裡選擇用圓角
+
+		let isDrawing = false; // 用來判斷是否正在畫圖
+		let lastX = 0; //用來設定畫筆的X座標
+		let lastY = 0; //用來設定畫筆的Y座標
+
+		canvas.addEventListener("mousemove", draw);
+		canvas.addEventListener("mousedown", (e) => {
+    		console.log(e);
+    		isDrawing = true;
+    		lastX = e.offsetX;
+    		lastY = e.offsetY;
+		});
+		canvas.addEventListener("mouseup", () => (isDrawing = false));
+		canvas.addEventListener("mouseout", () => (isDrawing = false));
+
+		let sum = 0;
+		let res = 0;
+		let hash = "";
+		const shaObj = new jsSHA("SHA-256", "TEXT", { encoding: "UTF8" });
+
+
+		function draw(e) {
+    		if (!isDrawing) return; //如果不是在mousedown的時候，這個function不作用
+    		console.log(e);
+		    ctx.beginPath() //產生一個新路徑，產生後再使用繪圖指令來設定路徑
+    		ctx.moveTo(lastX, lastY) //moveTo()不會畫任何圖形，但卻是上述路徑清單的一部分，這大概有點像是把筆從紙上一點提起來，然後放到另一個點。
+    		ctx.lineTo(e.offsetX, e.offsetY)//從目前繪圖點畫一條直線到指定的(x, y)座標點。
+    		ctx.stroke()//stroke() 會繪製出通過 moveTo() 和 lineTo() 方法定義的路径。默認颜色是黑色。
+
+    		lastX = e.offsetX; // 
+    		lastY = e.offsetY; //
+
+    		sum += lastX + lastY;
+    		shaObj.update(sum.toString() + hash);
+    		hash = shaObj.getHash("HEX");
+    		// res = parseInt(hash, 16); 
+
+    		document.getElementById("_a").value = hash;
+    		console.log(hash);
+		}
+
+		function big(x) {
+			x = "0x" + x;
+			x = new BigNumber(x)
+			return x.toString();
+		}
+
+
+	</script>
+
 </body>
 
 </html>
