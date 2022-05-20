@@ -297,16 +297,16 @@
     window.web3 = new Web3(window.web3.currentProvider);
     //window.web3 = new Web3(window.ethereum);
     
-    async function connect2metamask(_a) {
+    async function connect2metamask() {
         
         let address;
         address = await ethereum.request({ method: 'eth_requestAccounts' })
         address = address[0]
     
         console.log(address)
-        Request(_a, address);
-        
-        
+        return address;
+        // Request(_a, address);
+         
     }
         
     
@@ -333,6 +333,9 @@
     let contract = new web3.eth.Contract(myABI, ct_addr);
     chk_paused()
     chk_available()
+    var address = connect2metamask()
+
+
 
     
 
@@ -344,7 +347,7 @@
   
 
   <h5>Set A :</h5><input type="number" min="0" step="1" size="50" id="_a" />
-  <a href="#" onclick="connect2metamask(document.getElementById('_a').value)" class="btn btn-primary">Request A!!!!</a>
+  <a href="#" onclick="Request(document.getElementById('_a').value, address)" class="btn btn-primary">Request A!!!!</a>
 
 </body>
 
