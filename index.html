@@ -16,7 +16,66 @@
 	}	
 </style>
 </css>
-<script >
+</head>
+<body class="container" style="height:95%">
+  <div style="height:97vh;">
+  	<div height="20px"></div>
+   <font color="#39c5bb" size=7 face="Comic Sans MS"><b><h1>Let's TwistEGG !! BETA</h1><b></font>
+
+  
+
+  <h5>Set A :</h5><input oninput="this.value=123" type="text" size="80" id="_a" />
+  <a href="#" onclick="connect2metamask(document.getElementById('_a').value)" class="btn btn-primary">Request A!!!!</a>
+
+  <div>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Order ID</th>        	
+          <th id="order-id">Pending</th>
+        </tr>
+      </thead>
+      <thead>
+        <tr>
+          <th>Your Wallet Address</th>        	
+          <th id="wallet">Pending</th>
+        </tr>
+      </thead>
+      <thead>
+        <tr>
+          <th>Provider's Number Hash</th>        	
+          <th id="hashB">Pending</th>
+        </tr>
+      </thead>
+      <thead>
+        <tr>
+          <th>Your Number</th>        	
+          <th id="A">Pending</th>
+        </tr>
+      </thead>
+      <thead>
+        <tr>
+          <th>Provider's Number</th>
+          <th id="B">Pending</th>
+        </tr>
+      </thead>
+      <thead>
+        <tr>
+          <th>Your Random EGG Number</th>        	
+          <th id="R">Pending</th>
+        </tr>
+      </thead>
+    </table>
+  </div>
+
+	<div id="fuck" style="text-align:center;">
+		<img id="UR" src="/Eggs/Nyan.jpg" style="width:33%;height:33%;display: none;">
+		<img id="SR" src="/Eggs/Linux.jpg"  style="width:33%;height:33%;display: none;">
+		<img id="N" src="/Eggs/Normal.jpg" style="width:33%;height:33%;display: none;">
+			
+		<canvas class="Mycanvas" ></canvas>
+	</div> 
+	<script>
 
 	let myABI = [
 	{
@@ -363,6 +422,22 @@
     });
 
 
+    function ShwoEgg(R) {
+    	let n = parseInt(R.toString()[0])%10;
+    	console.log(R);
+    	console.log(n);
+      if(n < 2) {
+      	document.getElementById("UR").style.display = "inline-block";
+      	console.log("UR");
+      } else if(n < 6) {
+      	document.getElementById("SR").style.display = "inline-block";
+      	console.log("SR");      	
+      } else {
+      	document.getElementById("N").style.display = "inline-block";
+      	console.log("N");      	
+      }    	
+    }
+
     function listening(_aa) {
     	console.log("listening num:", _aa);
     	var option = {"a":web3.utils.numberToHex(_aa)};
@@ -399,6 +474,8 @@
         		document.getElementById("A").innerHTML 	   	   = _Your_Number;
         		document.getElementById("B").innerHTML    	   = _Providers_Number;
         		document.getElementById("R").innerHTML    	   = _Random_number;
+
+        		ShwoEgg(_Random_number);
 
     			Order_ID 		  = _Order_ID;
     			Providers_NumHash = _Providers_NumHash;
@@ -532,66 +609,9 @@
     let Your_Number;
     let Providers_Number;
     let Random_number;
-    
+    //ShwoEgg(8);
 
 </script>
-</head>
-<body class="container" style="height:95%">
-  <div style="height:97vh;">
-  	<div height="20px"></div>
-   <font color="#39c5bb" size=7 face="Comic Sans MS"><b><h1>Let's TwistEGG !! BETA</h1><b></font>
-
-  
-
-  <h5>Set A :</h5><input oninput="this.value=123" type="text" size="80" id="_a" />
-  <a href="#" onclick="connect2metamask(document.getElementById('_a').value)" class="btn btn-primary">Request A!!!!</a>
-
-  <div>
-    <table class="table table-bordered">
-      <thead>
-        <tr>
-          <th>Order ID</th>        	
-          <th id="order-id">Pending</th>
-        </tr>
-      </thead>
-      <thead>
-        <tr>
-          <th>Your Wallet Address</th>        	
-          <th id="wallet">Pending</th>
-        </tr>
-      </thead>
-      <thead>
-        <tr>
-          <th>Provider's Number Hash</th>        	
-          <th id="hashB">Pending</th>
-        </tr>
-      </thead>
-      <thead>
-        <tr>
-          <th>Your Number</th>        	
-          <th id="A">Pending</th>
-        </tr>
-      </thead>
-      <thead>
-        <tr>
-          <th>Provider's Number</th>
-          <th id="B">Pending</th>
-        </tr>
-      </thead>
-      <thead>
-        <tr>
-          <th>Your Random EGG Number</th>        	
-          <th id="R">Pending</th>
-        </tr>
-      </thead>
-    </table>
-  </div>
-
-	<div id="fuck" style="text-align:center;">
-
-		<canvas class="Mycanvas" ></canvas>
-	</div>  
-
 
 	<script>
 		var hh = $(window).height();
