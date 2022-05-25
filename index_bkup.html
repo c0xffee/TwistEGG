@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>TwistEGG</title>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+  <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
+  <!--<script src="https://cdn.jsdelivr.net/npm/web3@0.20.1/dist/web3.js"></script>-->
+<script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/3.2.0/sha256.min.js" integrity="sha512-j1REQToOszIQ5VTqzcgk5uHGXN3ce9NVsWSA3PA2Ze2NhwMiavzScb669EbY6XBHrhGFvLUpP6OhT9/LV7g8cw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bignumber.js/8.0.2/bignumber.min.js" integrity="sha512-7UzDjRNKHpQnkh1Wf1l6i/OPINS9P2DDzTwQNX79JxfbInCXGpgI1RPb3ZD+uTP3O5X7Ke4e0+cxt2TxV7n0qQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<style type="text/css">
+	html, body {
+    	height: 100vh;
+	}	
+</style>
+</css>
+<script >
+
+	let myABI = [
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "Order_ID",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "bytes32",
+				"name": "EGG_Provider_Chosen_Number_Hash",
+				"type": "bytes32"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "EGG_Twister_Chosen_Number",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "EGG_Provider_Chosen_Number",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "True_Random_Number",
+				"type": "uint256"
+			}
+		],
+		"name": "Order",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "Order_ID",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "EGG_Twister",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "bytes32",
+				"name": "EGG_Provider_Chosen_Number_Hash",
+				"type": "bytes32"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "EGG_Twister_Chosen_Number",
+				"type": "uint256"
+			}
+		],
+		"name": "Receipt",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "a",
+				"type": "uint256"
+			}
+		],
+		"name": "atest",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "bool",
+				"name": "paused",
+				"type": "bool"
+			}
+		],
+		"name": "isPaused",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "Orders",
+		"outputs": [
+			{
+				"internalType": "bytes32",
+				"name": "hashB",
+				"type": "bytes32"
+			},
+			{
+				"internalType": "uint256",
+				"name": "A",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "B",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "R",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes32",
+				"name": "_hashB",
+				"type": "bytes32"
+			}
+		],
+		"name": "Prepare",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_A",
+				"type": "uint256"
+			}
+		],
+		"name": "RANDOM",
+		"outputs": [
+			{
+				"internalType": "bytes32",
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"stateMutability": "pure",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_a",
+				"type": "uint256"
+			}
+		],
+		"name": "Request",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_b",
+				"type": "uint256"
+			}
+		],
+		"name": "Verify",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "idx",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_b",
+				"type": "uint256"
+			}
+		],
+		"name": "VerifyByIDX",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "admin",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "boss",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "head",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "mid",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "paused",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_admin",
+				"type": "address"
+			}
+		],
+		"name": "setAdmin",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bool",
+				"name": "_state",
+				"type": "bool"
+			}
+		],
+		"name": "setPause",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "tail",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_a",
+				"type": "uint256"
+			}
+		],
+		"name": "test",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+]
+    
+    $(function(){
+        if (window.web3) {
+            // 有安裝 MetaMask
+        } else {
+            alert( 'You havn\'t install MetaMask' );
+        }
+
+    });
+
+
+    function listening(_aa) {
+    	console.log("listening num:", _aa);
+    	var option = {"a":web3.utils.numberToHex(_aa)};
+    	contract.events.atest({filter:option})
+    		.on('data', function(event) {
+    			console.log('data');
+    			console.log('a:', event.returnValues.a);
+    			aa = event.returnValues.a;
+    		})
+    		.on('changed', changed => console.log('changed:', changed))
+    		.on('error', err => console.log('error:', err))
+    		.on('connected', str => console.log('connected:', str))
+    }
+
+
+    function WaitingOrderReciept(orderid) {
+    	console.log("Waiting Order ID:", orderid);
+    	var option = {"Order_ID":web3.utils.numberToHex(orderid)};
+    	contract.events.Order({filter:option})
+    		.on('data',  function(event) {
+        		let _Order_ID          = event.returnValues.Order_ID;
+        		let _Random_number     = event.returnValues.True_Random_Number;
+        		let _Your_Number       = event.returnValues.EGG_Twister_Chosen_Number;
+        		let _Providers_Number  = event.returnValues.EGG_Provider_Chosen_Number;
+        		let _Providers_NumHash = event.returnValues.EGG_Provider_Chosen_Number_Hash;
+        		console.log("Order ID:",			   _Order_ID);
+        		console.log("Your Random number:",	   _Random_number);
+        		console.log("Your Number:",			   _Your_Number);
+        		console.log("Provider's Number:",      _Providers_Number);
+        		console.log("Provider's Number Hash:", _Providers_NumHash);   
+
+        		document.getElementById("order-id").innerHTML  = _Order_ID;
+        		document.getElementById("hashB").innerHTML     = _Providers_NumHash;
+        		document.getElementById("A").innerHTML 	   	   = _Your_Number;
+        		document.getElementById("B").innerHTML    	   = _Providers_Number;
+        		document.getElementById("R").innerHTML    	   = _Random_number;
+
+    			Order_ID 		  = _Order_ID;
+    			Providers_NumHash = _Providers_NumHash;
+    			Your_Number 	  = _Your_Number;
+    			Providers_Number  = _Providers_Number;
+    			Random_number 	  = _Random_number;    
+
+    		})
+    		.on('changed', changed => console.log('changed:', changed))
+    		.on('error', err => console.log('error:', err))
+    		.on('connected', str => console.log('connected:', str))
+    	//var C = new web3.eth.Contract(myABI, ct_addr);
+    	/*
+    	var options = {
+        	"fromBlock": "0",
+        	"toBlock": "latest"
+        };
+    	var index = {
+        	"Order_ID": web3.utils.numberToHex(orderid)
+    	};
+    	var myEvent = C.Order(index, options);
+
+    	myEvent.watch(function(error, result){
+        	if(error){
+            	console.log("Get event error:", error);
+        	} else {
+            console.log(result);
+        	}
+    	});*/
+
+	}
+
+
+    async function Request(_a, address) { 
+    
+    	// _a = parseInt(_a)
+    	console.log(_a);
+    	let res = await contract.methods.Request(_a).send({from:address, value:0})
+        //let res = await contract.methods.Request(_a).call();
+        // console.log(res.events.aPayment.returnValues.price);
+        console.log(res);
+
+        let __Order_ID          = res.events.Receipt.returnValues.Order_ID;
+        let __Your_Wallet       = res.events.Receipt.returnValues.EGG_Twister;
+        let __Your_Number       = res.events.Receipt.returnValues.EGG_Twister_Chosen_Number;
+        let __Providers_NumHash = res.events.Receipt.returnValues.EGG_Provider_Chosen_Number_Hash;
+
+    	console.log('Order ID:', 				 __Order_ID);
+    	console.log('Your Wallet Address:',		 __Your_Wallet);
+    	console.log('Your Number:',				 __Your_Number);
+    	console.log('Provider\'s Number Hash::', __Providers_NumHash);
+	    console.log("Waiting Order Recipt .......");
+
+        document.getElementById("order-id").innerHTML  = __Order_ID;
+        document.getElementById("wallet").innerHTML    = __Your_Wallet;
+        document.getElementById("hashB").innerHTML 	   = __Providers_NumHash;
+        document.getElementById("A").innerHTML    	   = __Your_Number;
+
+    	Order_ID 		  = __Order_ID;
+    	Providers_NumHash = __Providers_NumHash;
+    	Your_Number 	  = __Your_Number;
+    	Your_Wallet       = __Your_Number;
+
+        WaitingOrderReciept(Order_ID)
+    };
+
+
+    window.web3 = new Web3(window.web3.currentProvider);
+    //window.web3 = new Web3(window.ethereum);
+
+    async function connect2metamask(_a) {
+
+    	// _a = new BigNumber("0x" + _a)
+        _a = "0x" + _a
+    	// Declare Varables
+    	let Order_ID;
+    	let Your_Wallet;
+    	let Providers_NumHash;
+    	let Your_Number;
+    	let Providers_Number;
+    	let Random_number;  
+
+
+        let address;
+        address = await ethereum.request({ method: 'eth_requestAccounts' })
+        address = address[0];
+    
+        console.log(address);
+        Request(_a, address);
+
+    }    
+        
+    
+    async function chk_paused() { 
+        let paused = await contract.methods.paused().call();        
+        console.log("Paused:", paused)
+        if(paused) {
+    		alert( 'EGG Twisting is not available now : PAUSED_BY_ADMIN' );
+    	}
+    };
+
+
+    async function chk_available() { 
+        let head_idx  = await contract.methods.head().call();        
+        let mid_idx   = await contract.methods.mid().call(); 
+        let tail_idx  = await contract.methods.tail().call(); 
+        head_idx = parseInt(head_idx);  
+        mid_idx  = parseInt(mid_idx);   
+        tail_idx = parseInt(tail_idx);  
+        console.log(head_idx, mid_idx, tail_idx)
+        console.log("available EGGs:", head_idx - mid_idx)
+        if(head_idx <= mid_idx) {
+    		alert( 'EGG Twisting is not available now : NO_MORE_EGGS_AVAILABLE_NOW' );
+    	}
+    };
+
+
+    // var ct_addr = "0xcA1a7C2EA46b387282230b4D91f7F09C4E221d36"; //v1.5
+    var ct_addr = "0x098530Fbb19Bc285982F3428aae846bc4F55E734";
+    let contract = new web3.eth.Contract(myABI, ct_addr);
+
+    console.log();
+    chk_paused()
+    chk_available()
+
+    console.log("v1.5");
+
+    let Order_ID;
+    let Your_Wallet;
+    let Providers_NumHash;
+    let Your_Number;
+    let Providers_Number;
+    let Random_number;
+    
+
+</script>
+</head>
+<body class="container" style="height:95%">
+  <div style="height:97vh;">
+  	<div height="20px"></div>
+   <font color="#39c5bb" size=7 face="Comic Sans MS"><b><h1>Let's TwistEGG !! BETA</h1><b></font>
+
+  
+
+  <h5>Set A :</h5><input oninput="this.value=123" type="text" size="80" id="_a" />
+  <a href="#" onclick="connect2metamask(document.getElementById('_a').value)" class="btn btn-primary">Request A!!!!</a>
+
+  <div>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Order ID</th>        	
+          <th id="order-id">Pending</th>
+        </tr>
+      </thead>
+      <thead>
+        <tr>
+          <th>Your Wallet Address</th>        	
+          <th id="wallet">Pending</th>
+        </tr>
+      </thead>
+      <thead>
+        <tr>
+          <th>Provider's Number Hash</th>        	
+          <th id="hashB">Pending</th>
+        </tr>
+      </thead>
+      <thead>
+        <tr>
+          <th>Your Number</th>        	
+          <th id="A">Pending</th>
+        </tr>
+      </thead>
+      <thead>
+        <tr>
+          <th>Provider's Number</th>
+          <th id="B">Pending</th>
+        </tr>
+      </thead>
+      <thead>
+        <tr>
+          <th>Your Random EGG Number</th>        	
+          <th id="R">Pending</th>
+        </tr>
+      </thead>
+    </table>
+  </div>
+
+	<div id="fuck" style="text-align:center;">
+
+		<canvas class="Mycanvas" ></canvas>
+	</div>  
+
+
+	<script>
+		var hh = $(window).height();
+
+		//document.getElementById('fuck').setAttribute("style","height:"+(hh-300).toString()+"px");
+
+		$(document).ready(function() {
+    $(window).resize(function() {
+        var h = $(window).height();
+        var w = $(window).width();
+
+        if((h/w)>0.61) {
+            $('#container').css({'height': h, 'width':h*1.64});
+        }
+        else { 
+            $('#container').css({'height': w/1.64, 'width':w});
+        }
+    });
+
+});
+
+		// draw //
+		const canvas = document.querySelector("canvas");
+		const ctx = canvas.getContext("2d");
+
+		canvas.width    = document.getElementById("fuck").offsetWidth ; // 設定畫布的寬度
+		canvas.height   = document.body.offsetHeight - 350; // 設定畫布的高度
+		ctx.fillStyle   = "gray"; // 設定勾勒圖形時用的顏色
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+		ctx.strokeStyle = "#BADA55"; // 設定勾勒圖形時用的顏色
+		ctx.lineJoin    = "round"; // 指定兩條線連結處的屬性，這裡選擇用圓角
+		ctx.lineCap     = "round"; // 指定每一條線末端的屬性，這裡選擇用圓角
+
+		let isDrawing = false; // 用來判斷是否正在畫圖
+		let lastX = 0; //用來設定畫筆的X座標
+		let lastY = 0; //用來設定畫筆的Y座標
+
+		canvas.addEventListener("mousemove", draw);
+		canvas.addEventListener("mousedown", (e) => {
+    		console.log(e);
+    		isDrawing = true;
+    		lastX = e.offsetX;
+    		lastY = e.offsetY;
+		});
+		canvas.addEventListener("mouseup", () => (isDrawing = false));
+		canvas.addEventListener("mouseout", () => (isDrawing = false));
+
+		let sum = 0;
+		let res = 0;
+		let hash = "";
+		const shaObj = new jsSHA("SHA-256", "TEXT", { encoding: "UTF8" });
+
+
+		function draw(e) {
+    		if (!isDrawing) return; //如果不是在mousedown的時候，這個function不作用
+    		console.log(e);
+		    ctx.beginPath() //產生一個新路徑，產生後再使用繪圖指令來設定路徑
+    		ctx.moveTo(lastX, lastY) //moveTo()不會畫任何圖形，但卻是上述路徑清單的一部分，這大概有點像是把筆從紙上一點提起來，然後放到另一個點。
+    		ctx.lineTo(e.offsetX, e.offsetY)//從目前繪圖點畫一條直線到指定的(x, y)座標點。
+    		ctx.stroke()//stroke() 會繪製出通過 moveTo() 和 lineTo() 方法定義的路径。默認颜色是黑色。
+
+    		lastX = e.offsetX; // 
+    		lastY = e.offsetY; //
+
+    		sum += lastX + lastY;
+    		shaObj.update(sum.toString() + hash);
+    		hash = shaObj.getHash("HEX");
+    		// res = parseInt(hash, 16); 
+
+    		document.getElementById("_a").value = hash;
+    		console.log(hash);
+		}
+
+		function big(x) {
+			x = "0x" + x;
+			x = new BigNumber(x)
+			return x.toString();
+		}
+
+
+	</script>
+
+
+</body>
+
+</html>
